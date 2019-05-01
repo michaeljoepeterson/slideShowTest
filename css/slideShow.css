@@ -17,6 +17,10 @@ body{
 	background-color: white;
 }
 
+.arrow:hover{
+	cursor: pointer;
+}
+
 .arrowLeft{
 	left:0;
 }
