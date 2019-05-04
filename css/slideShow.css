@@ -3,18 +3,24 @@ body{
 	padding: 0px;
 }
 
+.center{
+
+}
+
 .slideShowContainer{
 	background-color: black;
 	width: 100%;
-	height: 400px;
+	max-width: 1000px;
+	height: 100vh;
 	position: relative;
+	overflow: hidden;
 }
 
 .arrow{
 	display: inline-block;
 	position: absolute;
 	top: 40%;
-	background-color: white;
+	z-index: 100;
 }
 
 .arrow:hover{
@@ -28,4 +34,54 @@ body{
 .arrowRight{
 	right: 0;
 	transform: rotate(180deg)
+}
+.slideShowImage{
+	height: 100vh;
+	width:100%;
+	position: absolute;
+	/*object-fit:contain;*/
+}
+
+.imgContainer{
+	height: 100vh;
+	width:100%;
+	position: absolute;
+	display: inline-block;
+	/*object-fit:contain;*/
+}
+
+.slideShowContainer #imgContainer1{
+	background-image: url("../images/img1.JPG");
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.slideShowContainer #imgContainer2{
+	background-image: url("../images/img2.JPG");
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.slideShowContainer #imgContainer3{
+	background-image: url("../images/img3.JPG");
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+
+@media (min-width: 900px){
+	.imgContainer{
+		height: 80vh;
+	}
+
+	.slideShowContainer{
+		height: 80vh;
+	}
+
+	.slideShowImage{
+		height: 80vh;
+	}
 }
