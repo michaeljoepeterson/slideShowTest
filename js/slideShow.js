@@ -1,4 +1,5 @@
 function SlideShow(arrowLeft,arrowRight,slideShowContainerID,parentDiv,imageClass,maxWidth){
+	this.positionCalculating = false;
 	this.leftArrow = document.getElementById(arrowLeft);
 	this.rightArrow = document.getElementById(arrowRight);
 	this.slideShowContainer = document.getElementById(slideShowContainerID);
@@ -9,7 +10,7 @@ function SlideShow(arrowLeft,arrowRight,slideShowContainerID,parentDiv,imageClas
 	this.parent = document.getElementById(parentDiv);
 	this.parentWidth = this.parent.scrollWidth;
 	this.maxWidth = maxWidth;
-	console.log(this.slideShowWidth);
+	//console.log(this.slideShowWidth);
 	if(this.parentWidth > this.slideShowWidth){
 		this.slideShowContainer.style.marginLeft = this.centerMargin();
 	}
@@ -37,7 +38,7 @@ SlideShow.prototype.initEventListeners = function() {
 		if(this.slideShowWidth > this.maxWidth){
 			this.slideShowWidth = this.maxWidth;
 		}
-		console.log("parent,slideshow: ",this.parentWidth,this.slideShowWidth);
+		//console.log("parent,slideshow: ",this.parentWidth,this.slideShowWidth);
 		let diff = this.parentWidth - this.slideShowWidth;
     	if(diff > 1){
 			this.slideShowContainer.style.marginLeft = this.centerMargin();
@@ -46,20 +47,35 @@ SlideShow.prototype.initEventListeners = function() {
 			this.slideShowContainer.style.marginLeft = "0px";
 		}
 
-		if(this.parentWidth <= this.maxWidth){
+		if(this.parentWidth < this.maxWidth && !this.positionCalculating){
 			this.slideShowWidth = this.parentWidth;
-			this.initImagePositions();
-
+			this.positionCalculating = true;
+			setTimeout(function(){
+				
+				this.initImagePositions();
+				console.log("done")
+			}.bind(this),1100);
 		}
+		else if (this.parentWidth >= this.maxWidth){
+			this.initImagePositions();
+		}
+
+		
 
 	}.bind(this);
 };
 
 SlideShow.prototype.initImagePositions = function(){
 	for(let i = 0;i < this.slideShowImages.length;i++){
-		console.log(this.slideShowImages[i],i * this.slideShowWidth);
+		//console.log(this.slideShowImages[i],i * this.slideShowWidth);
 		this.slideShowImages[i].style.transform = "translateX(" + this.slideShowWidth * i + "px)";
+		if(i !== 0){
+			let heightString = this.slideShowImages[i].height;
+			let widthtString = this.slideShowImages[i].width;
+			console.log(widthtString,heightString);
+		}
 	}
+	this.positionCalculating = false;
 };
 
 SlideShow.prototype.centerMargin = function(){
