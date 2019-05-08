@@ -1,16 +1,20 @@
-function SlideShow(arrowLeft,arrowRight,slideShowContainerID,parentDiv){
+function SlideShow(arrowLeft,arrowRight,slideShowContainerID,parentDiv,imageClass,maxWidth){
 	this.leftArrow = document.getElementById(arrowLeft);
 	this.rightArrow = document.getElementById(arrowRight);
 	this.slideShowContainer = document.getElementById(slideShowContainerID);
-	this.slideShowWidth = this.slideShowContainer.scrollWidth;
+	//will get them in the correct order
+	this.slideShowImages = document.getElementsByClassName(imageClass);
+	this.slideShowWidth = this.slideShowContainer.clientWidth;
 	this.slideShowHeight = this.slideShowContainer.scrollHeight;
-	this.parent = document.getElementById(parentDiv)
+	this.parent = document.getElementById(parentDiv);
 	this.parentWidth = this.parent.scrollWidth;
+	this.maxWidth = maxWidth;
 	console.log(this.slideShowWidth);
 	if(this.parentWidth > this.slideShowWidth){
 		this.slideShowContainer.style.marginLeft = this.centerMargin();
 	}
 	this.initEventListeners();
+	this.initImagePositions();
 }
 
 //if keep 1000px width then can do a resize calc/init calc
@@ -30,6 +34,9 @@ SlideShow.prototype.initEventListeners = function() {
 		//console.log("test");
 		this.parentWidth = this.parent.scrollWidth;
 		this.slideShowWidth = this.slideShowContainer.scrollWidth;
+		if(this.slideShowWidth > this.maxWidth){
+			this.slideShowWidth = this.maxWidth;
+		}
 		console.log("parent,slideshow: ",this.parentWidth,this.slideShowWidth);
 		let diff = this.parentWidth - this.slideShowWidth;
     	if(diff > 1){
@@ -38,7 +45,21 @@ SlideShow.prototype.initEventListeners = function() {
 		else{
 			this.slideShowContainer.style.marginLeft = "0px";
 		}
+
+		if(this.parentWidth <= this.maxWidth){
+			this.slideShowWidth = this.parentWidth;
+			this.initImagePositions();
+
+		}
+
 	}.bind(this);
+};
+
+SlideShow.prototype.initImagePositions = function(){
+	for(let i = 0;i < this.slideShowImages.length;i++){
+		console.log(this.slideShowImages[i],i * this.slideShowWidth);
+		this.slideShowImages[i].style.transform = "translateX(" + this.slideShowWidth * i + "px)";
+	}
 };
 
 SlideShow.prototype.centerMargin = function(){
@@ -46,6 +67,8 @@ SlideShow.prototype.centerMargin = function(){
 	) / 2;
 	return leftMargin + "px";
 };
+
+
 
 SlideShow.prototype.leftArrowClicked = function(event) {
 	console.log("left clicked: ",event.currentTarget);
@@ -56,7 +79,7 @@ SlideShow.prototype.rightArrowClicked = function(event) {
 };
 
 function initSlideShow(){
-	var slideshow = new SlideShow("arrowLeft","arrowRight","slideShowContainer1","parentContainer");
+	var slideshow = new SlideShow("arrowLeft","arrowRight","slideShowContainer1","parentContainer","slideShowImage",1000);
 }
 
 window.onload = initSlideShow;

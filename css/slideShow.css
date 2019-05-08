@@ -3,10 +3,6 @@ body{
 	padding: 0px;
 }
 
-.center{
-
-}
-
 .slideShowContainer{
 	background-color: black;
 	width: 100%;
@@ -35,20 +31,27 @@ body{
 	right: 0;
 	transform: rotate(180deg)
 }
+
 .slideShowImage{
 	height: 100vh;
 	width:100%;
 	position: absolute;
+	transition: all 1s;
 	/*object-fit:contain;*/
 }
 
+.firstImage{
+	z-index: 50;
+}
+/*
 .imgContainer{
 	height: 100vh;
 	width:100%;
 	position: absolute;
 	display: inline-block;
-	/*object-fit:contain;*/
+	
 }
+
 
 .slideShowContainer #imgContainer1{
 	background-image: url("../images/img1.JPG");
@@ -71,7 +74,7 @@ body{
 	background-repeat: no-repeat;
 }
 
-
+*/
 @media (min-width: 900px){
 	.imgContainer{
 		height: 80vh;
