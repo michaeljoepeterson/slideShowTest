@@ -5,6 +5,7 @@ function SlideShow(arrowLeft,arrowRight,slideShowContainerID,parentDiv,imageClas
 	this.slideShowContainer = document.getElementById(slideShowContainerID);
 	//will get them in the correct order
 	this.slideShowImages = document.getElementsByClassName(imageClass);
+	this.activeImageIndex = 0;
 	this.slideShowWidth = this.slideShowContainer.clientWidth;
 	this.slideShowHeight = this.slideShowContainer.scrollHeight;
 	this.parent = document.getElementById(parentDiv);
@@ -32,13 +33,13 @@ SlideShow.prototype.initEventListeners = function() {
 	}.bind(this),false);
 
 	window.onresize = function(event) {
-		this.handleCenterReize();
-		this.handlePositionReize();
+		this.handleCenterResize();
+		this.handlePositionResize();
 
 	}.bind(this);
 };
 
-SlideShow.prototype.handlePositionReize = function(){
+SlideShow.prototype.handlePositionResize = function(){
 	if(this.parentWidth < this.maxWidth && !this.positionCalculating){
 		this.slideShowWidth = this.parentWidth;
 		this.positionCalculating = true;
@@ -53,7 +54,7 @@ SlideShow.prototype.handlePositionReize = function(){
 	}
 }
 
-SlideShow.prototype.handleCenterReize = function(){
+SlideShow.prototype.handleCenterResize = function(){
 	//console.log("test");
 		this.parentWidth = this.parent.scrollWidth;
 		this.slideShowWidth = this.slideShowContainer.scrollWidth;
@@ -68,17 +69,31 @@ SlideShow.prototype.handleCenterReize = function(){
 		else{
 			this.slideShowContainer.style.marginLeft = "0px";
 		}
+};
+
+SlideShow.prototype.getMaxDimensions = function(){
+	for(let i = 0;i < this.slideShowImages.length;i++){
+		if(this.slideShowImages[i].classList.contains("firstImage")){
+			return [this.slideShowImages[i].width,this.slideShowImages[i].height];
+		}
+	}
+}
+
+SlideShow.prototype.getImageCenter = function(width,height){
+	return {top:height/4,left:width/4};
 }
 
 SlideShow.prototype.initImagePositions = function(){
+	let activeImageDimensions = this.getMaxDimensions();
+	let activeImageWidth = activeImageDimensions[0];
+	let activeImageHeight = activeImageDimensions[1];
+	//need to set top/left position to center /4
 	for(let i = 0;i < this.slideShowImages.length;i++){
-		console.log(this.slideShowImages[i],i * this.slideShowWidth);
-		this.slideShowImages[i].style.transform = "translateX(" + this.slideShowWidth * i + "px)";
-		if(i !== 0){
-			let heightString = this.slideShowImages[i].height;
-			let widthtString = this.slideShowImages[i].width;
-			console.log(widthtString,heightString);
-		}
+		
+		//let imgHeight = this.slideShowImages[i].height;
+		//let imgWidth = this.slideShowImages[i].width;
+		console.log(this.slideShowImages[i],i * activeImageWidth);
+		this.slideShowImages[i].style.transform = "translateX(" + activeImageWidth * i + "px)";
 	}
 	this.positionCalculating = false;
 };
@@ -94,9 +109,31 @@ SlideShow.prototype.centerMargin = function(){
 SlideShow.prototype.leftArrowClicked = function(event) {
 	console.log("left clicked: ",event.currentTarget);
 };
-
+//may need a variable to stop resize calcs while slideshow happenning
+//then return promise and call resize
 SlideShow.prototype.rightArrowClicked = function(event) {
 	console.log("right clicked: ",event.currentTarget);
+	if(this.activeImageIndex === this.slideShowImages.length - 1){
+		return;
+	}
+	else{
+		let activeImageDimensions = this.getMaxDimensions();
+		let activeImageWidth = activeImageDimensions[0];
+		let activeImageHeight = activeImageDimensions[1];
+		this.slideShowImages[this.activeImageIndex].classList.remove("firstImage");
+		let center = this.getImageCenter(activeImageWidth,activeImageHeight);
+		//possibly put this in seperat function and return a promise?
+		//use then after to slide in/out images?
+		setTimeout(function(){
+			this.slideShowImages[this.activeImageIndex].style.top = center.top + "px";
+			this.slideShowImages[this.activeImageIndex].style.left = center.left +"px";
+			console.log("center image");
+			this.activeImageIndex += 1;
+		}.bind(this),1100);
+		
+		
+
+	}
 };
 
 function initSlideShow(){
