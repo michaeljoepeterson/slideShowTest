@@ -104,7 +104,20 @@ SlideShow.prototype.centerMargin = function(){
 	return leftMargin + "px";
 };
 
+SlideShow.prototype.resizeImage = function(center){
+	let promise = new Promise((resolve,reject) => {
+		setTimeout(function(){
+			this.slideShowImages[this.activeImageIndex].style.top = center.top + "px";
+			this.slideShowImages[this.activeImageIndex].style.left = center.left +"px";
+			console.log("center image");
+			this.activeImageIndex += 1;
 
+			resolve("yup");
+		}.bind(this),1100);
+	});
+
+	return promise;
+}
 
 SlideShow.prototype.leftArrowClicked = function(event) {
 	console.log("left clicked: ",event.currentTarget);
@@ -122,17 +135,11 @@ SlideShow.prototype.rightArrowClicked = function(event) {
 		let activeImageHeight = activeImageDimensions[1];
 		this.slideShowImages[this.activeImageIndex].classList.remove("firstImage");
 		let center = this.getImageCenter(activeImageWidth,activeImageHeight);
-		//possibly put this in seperat function and return a promise?
-		//use then after to slide in/out images?
-		setTimeout(function(){
-			this.slideShowImages[this.activeImageIndex].style.top = center.top + "px";
-			this.slideShowImages[this.activeImageIndex].style.left = center.left +"px";
-			console.log("center image");
-			this.activeImageIndex += 1;
-		}.bind(this),1100);
-		
-		
+		return this.resizeImage(center)
 
+		.then((data) => {
+			console.log("done resizing image",data);
+		})
 	}
 };
 
