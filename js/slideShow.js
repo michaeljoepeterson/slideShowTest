@@ -10,6 +10,8 @@ function SlideShow(arrowLeft,arrowRight,slideShowContainerID,parentDiv,imageClas
 	this.slideShowHeight = this.slideShowContainer.scrollHeight;
 	this.parent = document.getElementById(parentDiv);
 	this.parentWidth = this.parent.scrollWidth;
+	this.currentImageWidth;
+	this.currentImageHeight;
 	this.maxWidth = maxWidth;
 	//console.log(this.slideShowWidth);
 	if(this.parentWidth > this.slideShowWidth){
@@ -87,14 +89,25 @@ SlideShow.prototype.initImagePositions = function(){
 	let activeImageDimensions = this.getMaxDimensions();
 	let activeImageWidth = activeImageDimensions[0];
 	let activeImageHeight = activeImageDimensions[1];
+	let center = this.getImageCenter(activeImageWidth,activeImageHeight);
 	//need to set top/left position to center /4
 	for(let i = 0;i < this.slideShowImages.length;i++){
 		
 		//let imgHeight = this.slideShowImages[i].height;
 		//let imgWidth = this.slideShowImages[i].width;
 		console.log(this.slideShowImages[i],i * activeImageWidth);
-		this.slideShowImages[i].style.transform = "translateX(" + activeImageWidth * i + "px)";
+		
+		if(!this.slideShowImages[i].classList.contains("firstImage")){
+			this.slideShowImages[i].style.transform = "translateX(" + activeImageWidth + "px)";
+			this.slideShowImages[i].style.top = center.top + "px";
+			this.slideShowImages[i].style.left = center.left +"px";
+		}
+		else{
+			this.slideShowImages[i].style.transform = "translateX(0px)";
+		}
 	}
+	this.currentImageWidth = activeImageWidth;
+	this.currentImageHeight = activeImageHeight;
 	this.positionCalculating = false;
 };
 
@@ -104,24 +117,70 @@ SlideShow.prototype.centerMargin = function(){
 	return leftMargin + "px";
 };
 
-SlideShow.prototype.resizeImage = function(center){
+SlideShow.prototype.centerImage = function(center){
 	let promise = new Promise((resolve,reject) => {
 		setTimeout(function(){
 			this.slideShowImages[this.activeImageIndex].style.top = center.top + "px";
 			this.slideShowImages[this.activeImageIndex].style.left = center.left +"px";
 			console.log("center image");
-			this.activeImageIndex += 1;
+			
 
 			resolve("yup");
 		}.bind(this),1100);
 	});
 
 	return promise;
-}
+};
+
+SlideShow.prototype.moveImageLeft = function(){
+	let promise = new Promise((resolve,reject) =>{
+		setTimeout(function(){
+			let transformRegex = /\(|\)|translateX|px/g
+			let currentTranslate = parseInt(this.slideShowImages[this.activeImageIndex].style.transform.replace(transformRegex,""));
+			console.log(currentTranslate,this.currentImageWidth);
+			this.slideShowImages[this.activeImageIndex].style.transform = "translateX(" + (currentTranslate - this.currentImageWidth) + "px)";
+			resolve();
+		}.bind(this),1100);
+	});
+	
+
+	return promise;
+};
+
+SlideShow.prototype.resetPosition = function(){
+	let promise = new Promise((resolve,reject) =>{
+			setTimeout(function(){
+				this.slideShowImages[this.activeImageIndex].style.left = "0px";
+				this.slideShowImages[this.activeImageIndex].style.top = "0px";
+				resolve();
+			}.bind(this),1100);
+
+		});
+
+	return promise;
+	
+};
+
+SlideShow.prototype.resetSize = function(){
+	let promise = new Promise((resolve,reject) =>{
+			setTimeout(function(){
+				console.log("reset size: ",this.currentImageWidth,this.currentImageHeight);
+				//this.slideShowImages[this.activeImageIndex].style.height = this.currentImageHeight + "px";
+				//this.slideShowImages[this.activeImageIndex].style.width = this.currentImageWidth + "px";
+				this.slideShowImages[this.activeImageIndex].classList.add("firstImage");
+				resolve();
+			}.bind(this),1100);
+
+		});
+
+	return promise;
+	
+};
 
 SlideShow.prototype.leftArrowClicked = function(event) {
 	console.log("left clicked: ",event.currentTarget);
 };
+
 //may need a variable to stop resize calcs while slideshow happenning
 //then return promise and call resize
 SlideShow.prototype.rightArrowClicked = function(event) {
@@ -135,10 +194,23 @@ SlideShow.prototype.rightArrowClicked = function(event) {
 		let activeImageHeight = activeImageDimensions[1];
 		this.slideShowImages[this.activeImageIndex].classList.remove("firstImage");
 		let center = this.getImageCenter(activeImageWidth,activeImageHeight);
-		return this.resizeImage(center)
+		return this.centerImage(center)
 
 		.then((data) => {
 			console.log("done resizing image",data);
+			return this.moveImageLeft()
+		})
+		.then(()=>{
+			this.activeImageIndex += 1;
+			return this.moveImageLeft()
+		})
+
+		.then(() => {
+			return this.resetPosition()
+		})
+
+		.then(() => {
+			return this.resetSize()
 		})
 	}
 };

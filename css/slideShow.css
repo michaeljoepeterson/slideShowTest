@@ -82,13 +82,18 @@ body{
 @media (min-width: 900px){
 	.imgContainer{
 		height: 80vh;
-	}
+	}	
 
 	.slideShowContainer{
 		height: 80vh;
 	}
 
 	.slideShowImage{
+		height: 40vh;
+	}
+
+	.firstImage{
 		height: 80vh;
+		width: 100%;
 	}
 }
