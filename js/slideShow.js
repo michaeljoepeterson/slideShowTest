@@ -217,6 +217,9 @@ SlideShow.prototype.leftArrowClicked = function(event) {
 		.then(() => {
 			return this.resetSize()
 		})
+		.catch((err) => {
+			console.log("error in left clicked: ", err);
+		});
 	}
 };
 
@@ -250,6 +253,9 @@ SlideShow.prototype.rightArrowClicked = function(event) {
 		.then(() => {
 			return this.resetSize()
 		})
+		.catch((err) => {
+			console.log("error in right clicked: ", err);
+		});
 	}
 };
 
