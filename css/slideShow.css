@@ -47,38 +47,7 @@ body{
 	height: 100vh;
 	width: 100%;
 }
-/*
-.imgContainer{
-	height: 100vh;
-	width:100%;
-	position: absolute;
-	display: inline-block;
-	
-}
 
-
-.slideShowContainer #imgContainer1{
-	background-image: url("../images/img1.JPG");
-	background-size: cover;
-	background-position: center;
-	background-repeat: no-repeat;
-}
-
-.slideShowContainer #imgContainer2{
-	background-image: url("../images/img2.JPG");
-	background-size: cover;
-	background-position: center;
-	background-repeat: no-repeat;
-}
-
-.slideShowContainer #imgContainer3{
-	background-image: url("../images/img3.JPG");
-	background-size: cover;
-	background-position: center;
-	background-repeat: no-repeat;
-}
-
-*/
 @media (min-width: 900px){
 	.imgContainer{
 		height: 80vh;
